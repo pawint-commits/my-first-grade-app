@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>โปรแกรมคำนวณคะแนน AUN-QA</title>
+    <style>
+        /* CSS: ส่วนของการตกแต่ง */
+        body {
+            font-family: 'Kanit', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f7f6;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 480px;
+        }
+        input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 80%;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        button {
+            padding: 12px 25px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        button:hover { background-color: #218838; }
+        
+        #resultText {
+            margin-top: 20px;
+            color: green;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        #resultText.error {
+            color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>โปรแกรมแจ้งความหมายของระดับคะแนน QA 🎓</h2>
+        <input type="number" id="scoreInput" placeholder="ใส่คะแนนของคุณ (1-7)" min="1" max="7" step="1">
+        <br>
+        <button id="calcBtn">ผลลัพธ์</button>
+        <div id="resultText">รอดูผลลัพธ์ตรงนี้นะ</div>
+    </div>
+
+    <script>
+        // JavaScript: ส่วนของสมอง
+        document.getElementById("calcBtn").addEventListener("click", startCalculate);
+
+        function startCalculate() {
+            const inputEl = document.getElementById("scoreInput");
+            const resultEl = document.getElementById("resultText");
+            const raw = inputEl.value.trim();
+
+            // ล้าง state สีข้อความ
+            resultEl.classList.remove('error');
+
+            // ตรวจค่าว่าง
+            if (raw === "") {
+                resultEl.textContent = "กรุณากรอกคะแนนก่อนครับ";
+                resultEl.classList.add('error');
+                return;
+            }
+
+            // แปลงเป็นตัวเลขจำนวนเต็ม
+            const score = Number(raw);
+
+            // ตรวจว่าเป็นตัวเลขไหม
+            if (Number.isNaN(score)) {
+                resultEl.textContent = "กรุณากรอกเป็นตัวเลข 1-7 เท่านั้น";
+                resultEl.classList.add('error');
+                return;
+            }
+
+            // ตรวจช่วงคะแนน (1-7)
+            if (score < 1 || score > 7) {
+                resultEl.textContent = "คะแนนต้องอยู่ระหว่าง 1-7";
+                resultEl.classList.add('error');
+                return;
+            }
+
+            // แผนที่ความหมายของคะแนน
+            const meanings = {
+                7: "(Excellent): ดีเยี่ยมระดับโลก มีผลลัพธ์ที่โดดเด่นและเป็นต้นแบบ",
+                6: "(Example of Best Practices): คุณภาพยอดเยี่ยม เป็นแนวปฏิบัติที่ดี",
+                5: "(Better): คุณภาพดีมาก มีการพัฒนาต่อเนื่อง",
+                4: "(Good): คุณภาพดี มีการดำเนินการตามเกณฑ์",
+                3: "(Adequate): คุณภาพเพียงพอ แต่ยังไม่สมบูรณ์",
+                2: "(Fail): คุณภาพไม่เพียงพอ จำเป็นต้องมีการปรับปรุง",
+                1: "(Inadequate): คุณภาพไม่เพียงพออย่างชัดเจน"
+            };
+
+            // ปัดค่าทศนิยม (ถ้าเผลอใส่) ให้เป็นจำนวนเต็มใกล้เคียง
+            const rounded = Math.round(score);
+
+            // แสดงผล
+            resultEl.textContent = meanings[rounded] ?? "ใส่ข้อมูลไม่ถูกต้อง";
+            // ถ้าต้องการล็อคให้รับเฉพาะจำนวนเต็ม 1-7 แบบเคร่งครัด ใช้เงื่อนไขนี้แทน:
+            // if (!Number.isInteger(score)) { ...แจ้งเตือน...; return; }
+        }
+    </script>
+
+</body>
+</html>
